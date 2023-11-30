@@ -1,0 +1,99 @@
+<div class="mt-4">
+    <div>
+        <h3>My trash</h3>
+        <a href="/me/stored/courses">My stuffs</a>
+    </div>
+    
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th scope="col" colspan="2">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col" colspan="2">Delete at</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each courses}}
+            <tr>
+                <th scope="row">{{sum @index 1}}</th>
+                <td>{{this.name}}</td>
+                <td>{{this.description}}</td>
+                <td>{{this.deletedAt}}</td>
+                <td>
+                    <a class="btn btn-link btn-restore" href="" data-id="{{this._id}}">Restore</a>
+                    <a class="btn btn-link" data-bs-toggle="modal" data-id="{{this._id}}" data-bs-target="#delete-modal"
+                        href="#">Delete</a>
+                </td>
+            </tr>
+            {{else}}
+            <tr>
+                <td colspan="5" class="text-center">
+                    It nothing here
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+{{!-- Confirm delete --}}
+<div id="delete-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete this?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want delete this?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="btn-delete" type="button" class="btn btn-primary">Delete anyway</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<form name="delete-form" method="post"></form>
+<form name="restore-form" method="post"></form>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var id;
+        var btnDelete = document.getElementById('btn-delete');
+        var deleteForm = document.forms['delete-form'];
+        var containerForm = document.forms['container-form'];
+        var btnRestore = $('.btn-restore');
+        var restoreForm = document.forms['restore-form'];
+        var checkboxAll = $('#checkbox-all');
+        var courseItemCheckbox = $('input[name="courseIds[]"]');
+        var checkAllSubmitBtn = $('.btn-check-all-submit');
+
+        // When dialog confirm clicked
+        $('#delete-modal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            id = button.data('data-id')
+        });
+
+        // When delete btn clicked
+        btnDelete.onclick = function () {
+            deleteForm.action = '/courses/' + id + '/force?_method=DELETE';
+            deleteForm.submit();
+        }
+
+        // Restore btn clicked
+        btnRestore.click(function (e) {
+            e.preventDefault();
+
+            var id = $(this).data('id');
+            restoreForm.action = '/courses/' + id + '/restore?_method=PATCH';
+            restoreForm.submit();
+        });
+
+        
+    });
+</script>

@@ -1,0 +1,15 @@
+<div class="mt-4">
+    <h3>Edit</h3>
+    <form class="mt-4" method="post" action="/courses/{{course._id}}?_method=PUT">
+        <div class="mb-3">
+            <label for="description">Mô tả</label>
+            <textarea class="form-control" id="description">{{course.description}}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" value="{{course.name}}" id="name">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Edit</button>
+    </form>
+</div>
